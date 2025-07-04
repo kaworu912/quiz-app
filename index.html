@@ -73,7 +73,7 @@
     }
 
     @media (max-width: 480px) {
-      html { font-size: 16px; }
+      html { font-size: 14px; }
       .question { font-size: 1.4em; }
       .option { font-size: 1.2em; }
       button { font-size: 1.1em; }
@@ -161,6 +161,18 @@
       }
     }
 
+    function shuffleOptions(options, correctIndex) {
+      const labeled = options.map((text, i) => ({
+        text,
+        isCorrect: i === correctIndex
+      }));
+      for (let i = labeled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [labeled[i], labeled[j]] = [labeled[j], labeled[i]];
+      }
+      return labeled;
+    }
+
     function loadQuestion() {
       if (current >= questions.length) {
         document.getElementById("question").textContent = "🎉 全部題目已完成！";
@@ -173,37 +185,43 @@
       document.getElementById("question").textContent = `第 ${current + 1} 題：` + q.question;
       const optionsDiv = document.getElementById("options");
       optionsDiv.innerHTML = "";
-      q.options.forEach((opt, i) => {
+
+      const shuffledOptions = shuffleOptions(q.options, q.answer);
+
+      shuffledOptions.forEach((opt, i) => {
         const btn = document.createElement("button");
-        btn.textContent = String.fromCharCode(65 + i) + ". " + opt;
+        btn.textContent = String.fromCharCode(65 + i) + ". " + opt.text;
         btn.className = "option";
-        btn.onclick = () => checkAnswer(i);
+        btn.onclick = () => checkAnswer(opt.isCorrect, i, shuffledOptions);
         optionsDiv.appendChild(btn);
       });
+
       document.getElementById("result").textContent = "";
       answered = false;
     }
 
-    function checkAnswer(selected) {
+    function checkAnswer(isCorrect, selectedIndex, optionList) {
       if (answered) return;
       answered = true;
-      const q = questions[current];
+
       const resultDiv = document.getElementById("result");
       const options = document.querySelectorAll(".option");
 
-      if (selected === q.answer) {
+      if (isCorrect) {
         correct++;
         resultDiv.innerHTML = `✅ 答對了！（目前答對：${correct} 題，答錯：${wrong} 題）`;
         resultDiv.style.color = "green";
-        options[selected].classList.add("correct");
+        options[selectedIndex].classList.add("correct");
       } else {
         wrong++;
-        resultDiv.innerHTML = `❌ 答錯了，正確答案是 ${String.fromCharCode(65 + q.answer)}（目前答對：${correct} 題，答錯：${wrong} 題）`;
+        const correctIndex = optionList.findIndex(opt => opt.isCorrect);
+        resultDiv.innerHTML = `❌ 答錯了，正確答案是 ${String.fromCharCode(65 + correctIndex)}（目前答對：${correct} 題，答錯：${wrong} 題）`;
         resultDiv.style.color = "red";
-        options[selected].classList.add("wrong");
-        options[q.answer].classList.add("correct");
+        options[selectedIndex].classList.add("wrong");
+        options[correctIndex].classList.add("correct");
       }
 
+      const q = questions[current];
       if (q.explanation) {
         resultDiv.innerHTML += `<br><span style="color: black;">解析：${q.explanation}</span>`;
       }
