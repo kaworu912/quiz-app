@@ -7,25 +7,29 @@
   <style>
     body {
       font-family: sans-serif;
-      font-size: 18px;
+      font-size: 14px;
       padding: 10px;
       line-height: 1.6;
       max-width: 600px;
       margin: auto;
     }
     h2 {
-      font-size: 18px;
+      font-size: 14px; /* 答題系統標題 */
+    }
+    label, select {
+      font-size: 14px; /* 選擇科目文字和下拉選單 */
     }
     select, button {
-      font-size: 14px;
       padding: 6px 10px;
       margin: 8px 0;
       border-radius: 4px;
       border: 1px solid #ccc;
       cursor: pointer;
+      font-size: 14px;
     }
     .question-box {
       margin-top: 20px;
+      font-size: 18px; /* 題目字體大小 */
     }
     .option {
       display: block;
@@ -35,7 +39,7 @@
       border-radius: 5px;
       background-color: #f9f9f9;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 18px; /* 選項字體大小 */
       user-select: none;
     }
     .option.correct {
@@ -49,11 +53,11 @@
     #result {
       margin-top: 15px;
       font-weight: bold;
-      font-size: 14px;
+      font-size: 14px; /* 答題結果和解析 */
     }
     #score {
       margin-top: 5px;
-      font-size: 13px;
+      font-size: 14px; /* 計分文字 */
     }
   </style>
 </head>
