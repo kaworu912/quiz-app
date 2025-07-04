@@ -34,12 +34,20 @@
       cursor: pointer;
       width: 100%;
       text-align: left;
-      color: black; /* 改為黑色 */
+      color: black;
       box-sizing: border-box;
     }
 
     .option:hover {
       background-color: #e0e0ff;
+    }
+
+    .option.correct {
+      background-color: #d4edda !important;
+    }
+
+    .option.wrong {
+      background-color: #f8d7da !important;
     }
 
     .result {
@@ -112,15 +120,11 @@
         explanation: "司法院屬於司法權，是解釋憲法、審理訴訟的機關。"
       },
       {
-        question: "監獄行刑法第三條，處拘役及罰金易服勞役者，應與處徒刑者分別監禁。下列何者並非應「分別監禁」之理由？",
-        options: ["避免惡性感染", "醫療需求不同", "矯治處遇的不同", "管教以及作業之方便性"],
+        question: "中華民國國慶日是幾月幾號？",
+        options: ["10月1日", "10月10日", "12月25日", "1月1日"],
         answer: 1,
-      },
-      {
-  question: "下列選項何者並非我國監獄行刑法主旨中所謂的改悔向上措施？",
-  options: ["本法40條施以教化", "本法141條之更生保護", "本法41條利用宗教力量", "本法第9章接見與通信"],
-  answer: 1
-}
+        explanation: "中華民國國慶日為10月10日，稱為雙十節。"
+      }
     ];
 
     let questions = [];
@@ -164,17 +168,21 @@
       answered = true;
       const q = questions[current];
       const resultDiv = document.getElementById("result");
+      const options = document.querySelectorAll(".option");
+
       if (selected === q.answer) {
         resultDiv.innerHTML = "✅ 答對了！";
         resultDiv.style.color = "green";
+        options[selected].classList.add("correct");
         correct++;
       } else {
         resultDiv.innerHTML = "❌ 答錯了，正確答案是 " + String.fromCharCode(65 + q.answer);
         resultDiv.style.color = "red";
+        options[selected].classList.add("wrong");
+        options[q.answer].classList.add("correct");
         wrong++;
       }
 
-      // 顯示解析
       if (q.explanation) {
         resultDiv.innerHTML += `<br><span style="color: black;">解析：${q.explanation}</span>`;
       }
@@ -188,7 +196,7 @@
         loadQuestion();
       } else {
         current++;
-        loadQuestion(); // 顯示完成畫面
+        loadQuestion();
       }
     }
 
@@ -207,7 +215,6 @@
       document.getElementById("wrongCount").textContent = wrong;
     }
 
-    // 初始載入
     restartQuiz();
   </script>
 
