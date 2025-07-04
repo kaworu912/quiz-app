@@ -1,253 +1,147 @@
+
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>選擇題作答系統</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>多科目答題系統</title>
   <style>
-    html {
-      font-size: 14px;
-    }
-
     body {
-      font-family: "Segoe UI", sans-serif;
-      padding: 1.5em;
-      max-width: 700px;
-      margin: auto;
-      line-height: 1.7;
+      font-family: sans-serif;
+      font-size: 14px;
+      padding: 20px;
+      line-height: 1.6;
     }
-
-    .question {
-      font-size: 1.4em;
-      font-weight: bold;
-      margin-bottom: 1em;
+    .question-box {
+      margin-top: 20px;
     }
-
     .option {
       display: block;
-      margin: 0.8em 0;
-      padding: 1em;
-      font-size: 1.1em;
-      background-color: #f5f5f5;
-      border: 2px solid #ccc;
-      border-radius: 8px;
+      margin: 8px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9f9f9;
       cursor: pointer;
-      width: 100%;
-      text-align: left;
-      color: black;
-      box-sizing: border-box;
     }
-
-    .option:hover {
-      background-color: #e0e0ff;
-    }
-
     .option.correct {
-      background-color: #d4edda !important;
+      background-color: #d4edda;
+      border-color: #c3e6cb;
     }
-
-    .option.wrong {
-      background-color: #f8d7da !important;
+    .option.incorrect {
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
     }
-
-    .result {
+    #result {
+      margin-top: 15px;
       font-weight: bold;
-      margin-top: 1em;
-      font-size: 1.1em;
     }
-
-    button {
-      margin-top: 1em;
-      margin-right: 0.5em;
-      padding: 0.8em 1.5em;
-      font-size: 1em;
-      border: none;
-      background-color: #4CAF50;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #45a049;
-    }
-
-    @media (max-width: 480px) {
-      html { font-size: 14px; }
-      .question { font-size: 1.4em; }
-      .option { font-size: 1.2em; }
-      button { font-size: 1.1em; }
+    #score {
+      margin-top: 5px;
+      font-size: 13px;
     }
   </style>
 </head>
 <body>
+  <h2>答題系統（多科目）</h2>
 
-  <div id="quiz">
-    <div class="question" id="question"></div>
-    <div id="options"></div>
-    <div class="result" id="result"></div>
-    <button onclick="nextQuestion()">下一題</button>
-    <button onclick="restartQuiz()">重新開始</button>
-  </div>
+  <label for="subject-select">請選擇科目：</label>
+  <select id="subject-select">
+    <option value="監獄行刑法">監獄行刑法</option>
+    <option value="刑法">刑法</option>
+    <option value="法學緒論">法學緒論</option>
+    <option value="犯罪學">犯罪學</option>
+    <option value="監獄學">監獄學</option>
+  </select>
+
+  <div class="question-box" id="question-box"></div>
+  <div id="result"></div>
+  <div id="score"></div>
+  <button onclick="nextQuestion()">下一題</button>
+  <button onclick="resetQuiz()">重新開始</button>
 
   <script>
-    const originalQuestions = [
-      {
-        question: "我國憲法是在哪一年制定的？",
-        options: ["1911年", "1947年", "1987年", "2005年"],
-        answer: 1,
-        explanation: "中華民國憲法於1947年制定，並於同年12月25日施行。"
-      },
-      {
-        question: "下列哪一項屬於三權分立之一？",
-        options: ["經濟權", "行政權", "新聞自由", "文化權"],
-        answer: 1,
-        explanation: "三權分立為立法權、行政權、司法權，行政權是其中之一。"
-      },
-      {
-        question: "司法院屬於我國哪一權？",
-        options: ["立法權", "行政權", "司法權", "考試權"],
-        answer: 2,
-        explanation: "司法院屬於司法權，是解釋憲法、審理訴訟的機關。"
-      },
-      {
-        question: "中華民國國慶日是幾月幾號？",
-        options: ["10月1日", "10月10日", "12月25日", "1月1日"],
-        answer: 1,
-        explanation: "中華民國國慶日為10月10日，稱為雙十節。"
-      },
-      {
-        question: "中華民國憲法明文規定的五權分立，不包括以下哪一項？",
-        options: ["立法權", "行政權", "軍事權", "考試權"],
-        answer: 2,
-        explanation: "五權分立包含立法、行政、司法、考試與監察，並未包含軍事權。"
-      },
-      {
-        question: "依憲法規定，總統的任期為幾年？",
-        options: ["4年", "5年", "6年", "任期未定"],
-        answer: 0,
-        explanation: "總統、副總統任期為四年，可連選連任一次（最多八年）。"
-      },
-      {
-        question: "依憲法第11條，國家保障人民的哪一項自由？",
-        options: ["財產自由", "工作自由", "言論自由", "教育自由"],
-        answer: 2,
-        explanation: "憲法第11條明文保障人民有言論、講學、著作及出版之自由。"
-      },
-      {
-        question: "下列何者為憲法增修條文明文規定的中央機關？",
-        options: ["省政府", "立法院", "鄉鎮市公所", "國防部"],
-        answer: 1,
-        explanation: "憲法增修條文明文規定中央有立法院與行政院等，立法院為中央機關。"
-      },
-      {
-        question: "人民享有選舉、罷免、創制、複決的權利，是屬於哪一類基本權？",
-        options: ["自由權", "平等權", "參政權", "請願權"],
-        answer: 2,
-        explanation: "這些權利是人民參與公共事務的方式，屬於參政權。"
+    const questionBanks = {"監獄行刑法": [{"question": "依監獄行刑法規定，受刑人可以向哪個機關申訴監獄處分？", "options": ["監獄長官", "地方法院", "監察院", "法務部"], "answer": 1, "explanation": "受刑人若對監獄處分不服，得向地方法院提起訴訟或聲明異議。"}, {"question": "監獄行刑法主要是規範下列何種事項？", "options": ["刑事訴訟程序", "受刑人處遇與管理", "檢察官權限", "法院組織"], "answer": 1, "explanation": "監獄行刑法主要規範受刑人在監之處遇、懲罰、請假、會客等事項。"}], "刑法": [{"question": "刑法上所謂的故意，是指行為人對於構成要件該當事實具有何種心理狀態？", "options": ["疏忽", "明知並希望", "不知情", "過失"], "answer": 1, "explanation": "刑法中的故意，包含直接故意與間接故意，皆需有明知且希望或放任。"}, {"question": "刑法第19條規定有關心神喪失者的責任，下列敘述何者正確？", "options": ["完全免除其刑事責任", "減輕其刑", "得加重其刑", "無關責任"], "answer": 0, "explanation": "心神喪失者行為時無辨識能力，不負刑事責任。"}], "法學緒論": [{"question": "下列何者非屬法律的特徵？", "options": ["普遍性", "強制性", "地方性", "規範性"], "answer": 2, "explanation": "法律具備普遍、規範、強制等特性，地方性非本質特徵。"}, {"question": "法學上所稱的「實體法」，主要規範什麼？", "options": ["訴訟程序", "權利義務內容", "法院組織", "管轄權"], "answer": 1, "explanation": "實體法規範權利義務的實質內容，如民法、刑法。"}], "犯罪學": [{"question": "差別接觸理論的重點在於？", "options": ["生理因素", "家庭教養", "與犯罪者互動", "遺傳影響"], "answer": 2, "explanation": "差別接觸理論認為與犯罪者頻繁互動會學習到犯罪行為。"}, {"question": "下列何者屬於社會控制理論的主張？", "options": ["犯罪源於學習", "社會聯結越強，越不易犯罪", "犯罪天生具備", "人格缺陷"], "answer": 1, "explanation": "社會控制理論主張社會聯結越強，犯罪傾向越低。"}], "監獄學": [{"question": "監獄學中，改革派監獄的重點為何？", "options": ["強調隔離", "強調報復", "重視教育與改造", "執行死刑"], "answer": 2, "explanation": "改革派強調教育、工作及改造受刑人，使其復歸社會。"}, {"question": "根據監獄學的分類，總體設施監獄的特色是？", "options": ["高度自由", "高科技管理", "全封閉且集中管理", "以網路監控為主"], "answer": 2, "explanation": "總體設施是傳統集中式管理，安全性高但自由低。"}]};
+    let currentSubject = "監獄行刑法";
+    let currentQuestions = [];
+    let currentQuestionIndex = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+
+    document.getElementById("subject-select").addEventListener("change", function() {
+      currentSubject = this.value;
+      resetQuiz();
+    });
+
+    function loadQuestions() {
+      currentQuestions = [...questionBanks[currentSubject]];
+      shuffleArray(currentQuestions);
+      currentQuestionIndex = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const box = document.getElementById("question-box");
+      const result = document.getElementById("result");
+      result.textContent = "";
+      box.innerHTML = "";
+      if (currentQuestionIndex >= currentQuestions.length) {
+        box.innerHTML = "<p>本科目題目已完成。</p>";
+        return;
       }
-    ];
+      const q = currentQuestions[currentQuestionIndex];
+      const questionEl = document.createElement("div");
+      questionEl.innerHTML = `<strong>Q${currentQuestionIndex + 1}：</strong>${q.question}`;
+      box.appendChild(questionEl);
 
-    let questions = [];
-    let current = 0;
-    let correct = 0;
-    let wrong = 0;
-    let answered = false;
+      const optionIndexes = [0, 1, 2, 3];
+      shuffleArray(optionIndexes);
 
-    function shuffle(array) {
+      optionIndexes.forEach(i => {
+        const btn = document.createElement("div");
+        btn.className = "option";
+        btn.textContent = String.fromCharCode(65 + i) + ". " + q.options[i];
+        btn.addEventListener("click", () => {
+          const allOptions = document.querySelectorAll(".option");
+          allOptions.forEach(el => el.style.pointerEvents = "none");
+          if (i === q.answer) {
+            btn.classList.add("correct");
+            result.textContent = "答對了！";
+            correctCount++;
+          } else {
+            btn.classList.add("incorrect");
+            allOptions[q.answer].classList.add("correct");
+            result.textContent = "答錯了！";
+            wrongCount++;
+          }
+          result.innerHTML += `<br><small>解析：${q.explanation}</small>`;
+          document.getElementById("score").textContent = `✔️ 答對：${correctCount} 題　❌ 答錯：${wrongCount} 題`;
+        });
+        box.appendChild(btn);
+      });
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      showQuestion();
+    }
+
+    function resetQuiz() {
+      loadQuestions();
+      document.getElementById("score").textContent = "";
+    }
+
+    function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
       }
     }
 
-    function shuffleOptions(options, correctIndex) {
-      const labeled = options.map((text, i) => ({
-        text,
-        isCorrect: i === correctIndex
-      }));
-      for (let i = labeled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [labeled[i], labeled[j]] = [labeled[j], labeled[i]];
-      }
-      return labeled;
-    }
-
-    function loadQuestion() {
-      if (current >= questions.length) {
-        document.getElementById("question").textContent = "🎉 全部題目已完成！";
-        document.getElementById("options").innerHTML = "";
-        document.getElementById("result").textContent = "";
-        return;
-      }
-
-      const q = questions[current];
-      document.getElementById("question").textContent = `第 ${current + 1} 題：` + q.question;
-      const optionsDiv = document.getElementById("options");
-      optionsDiv.innerHTML = "";
-
-      const shuffledOptions = shuffleOptions(q.options, q.answer);
-
-      shuffledOptions.forEach((opt, i) => {
-        const btn = document.createElement("button");
-        btn.textContent = String.fromCharCode(65 + i) + ". " + opt.text;
-        btn.className = "option";
-        btn.onclick = () => checkAnswer(opt.isCorrect, i, shuffledOptions);
-        optionsDiv.appendChild(btn);
-      });
-
-      document.getElementById("result").textContent = "";
-      answered = false;
-    }
-
-    function checkAnswer(isCorrect, selectedIndex, optionList) {
-      if (answered) return;
-      answered = true;
-
-      const resultDiv = document.getElementById("result");
-      const options = document.querySelectorAll(".option");
-
-      if (isCorrect) {
-        correct++;
-        resultDiv.innerHTML = `✅ 答對了！（目前答對：${correct} 題，答錯：${wrong} 題）`;
-        resultDiv.style.color = "green";
-        options[selectedIndex].classList.add("correct");
-      } else {
-        wrong++;
-        const correctIndex = optionList.findIndex(opt => opt.isCorrect);
-        resultDiv.innerHTML = `❌ 答錯了，正確答案是 ${String.fromCharCode(65 + correctIndex)}（目前答對：${correct} 題，答錯：${wrong} 題）`;
-        resultDiv.style.color = "red";
-        options[selectedIndex].classList.add("wrong");
-        options[correctIndex].classList.add("correct");
-      }
-
-      const q = questions[current];
-      if (q.explanation) {
-        resultDiv.innerHTML += `<br><span style="color: black;">解析：${q.explanation}</span>`;
-      }
-    }
-
-    function nextQuestion() {
-      if (current < questions.length - 1) {
-        current++;
-        loadQuestion();
-      } else {
-        current++;
-        loadQuestion();
-      }
-    }
-
-    function restartQuiz() {
-      correct = 0;
-      wrong = 0;
-      current = 0;
-      questions = [...originalQuestions];
-      shuffle(questions);
-      loadQuestion();
-    }
-
-    restartQuiz();
+    // 初始化
+    loadQuestions();
   </script>
-
 </body>
 </html>
