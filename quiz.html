@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>選擇題作答系統</title>
+  <style>
+    body { font-family: sans-serif; padding: 2em; max-width: 600px; margin: auto; }
+    .question { font-size: 1.2em; margin-bottom: 1em; }
+    .option { display: block; margin: 0.5em 0; }
+    .result { font-weight: bold; margin-top: 1em; }
+    .stats { margin-top: 1em; }
+    button { margin-top: 1em; margin-right: 0.5em; }
+  </style>
+</head>
+<body>
+
+  <div id="quiz">
+    <div class="question" id="question"></div>
+    <div id="options"></div>
+    <div class="result" id="result"></div>
+    <div class="stats">
+      ✅ 答對：<span id="correctCount">0</span>　
+      ❌ 答錯：<span id="wrongCount">0</span>
+    </div>
+    <button onclick="nextQuestion()">下一題</button>
+    <button onclick="restartQuiz()">重新開始</button>
+  </div>
+
+  <script>
+    // 題庫
+    const originalQuestions = [
+      {
+        question: "我國憲法是在哪一年制定的？",
+        options: ["1911年", "1947年", "1987年", "2005年"],
+        answer: 1
+      },
+      {
+        question: "下列哪一項屬於三權分立之一？",
+        options: ["經濟權", "行政權", "新聞自由", "文化權"],
+        answer: 1
+      },
+      {
+        question: "司法院屬於我國哪一權？",
+        options: ["立法權", "行政權", "司法權", "考試權"],
+        answer: 2
+      },
+      {
+        question: "中華民國國慶日是幾月幾號？",
+        options: ["10月1日", "10月10日", "12月25日", "1月1日"],
+        answer: 1
+      },
+{
+  question: "下列選項何者並非我國監獄行刑法主旨中所謂的改悔向上措施？",
+  options: ["本法40條施以教化", "本法141條之更生保護", "本法41條利用宗教力量", "本法第9章接見與通信"],
+  answer: 1
+}
+    ];
+
+    let questions = [];
+    let current = 0;
+    let correct = 0;
+    let wrong = 0;
+    let answered = false;
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function loadQuestion() {
+      if (current >= questions.length) {
+        document.getElementById("question").textContent = "🎉 全部題目已完成！";
+        document.getElementById("options").innerHTML = "";
+        document.getElementById("result").textContent = "";
+        return;
+      }
+
+      const q = questions[current];
+      document.getElementById("question").textContent = `第 ${current + 1} 題：` + q.question;
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = String.fromCharCode(65 + i) + ". " + opt;
+        btn.className = "option";
+        btn.onclick = () => checkAnswer(i);
+        optionsDiv.appendChild(btn);
+      });
+      document.getElementById("result").textContent = "";
+      answered = false;
+    }
+
+    function checkAnswer(selected) {
+      if (answered) return;
+      answered = true;
+      const q = questions[current];
+      const resultDiv = document.getElementById("result");
+      if (selected === q.answer) {
+        resultDiv.textContent = "✅ 答對了！";
+        resultDiv.style.color = "green";
+        correct++;
+      } else {
+        resultDiv.textContent = "❌ 答錯了，正確答案是 " + String.fromCharCode(65 + q.answer);
+        resultDiv.style.color = "red";
+        wrong++;
+      }
+      updateStats();
+    }
+
+    function nextQuestion() {
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      } else {
+        current++;
+        loadQuestion(); // 顯示完成畫面
+      }
+    }
+
+    function restartQuiz() {
+      correct = 0;
+      wrong = 0;
+      current = 0;
+      questions = [...originalQuestions];
+      shuffle(questions);
+      updateStats();
+      loadQuestion();
+    }
+
+    function updateStats() {
+      document.getElementById("correctCount").textContent = correct;
+      document.getElementById("wrongCount").textContent = wrong;
+    }
+
+    // 初始載入
+    restartQuiz();
+  </script>
+
+</body>
+</html>
