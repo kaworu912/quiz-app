@@ -2,14 +2,73 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>選擇題作答系統</title>
   <style>
-    body { font-family: sans-serif; padding: 2em; max-width: 600px; margin: auto; }
-    .question { font-size: 1.2em; margin-bottom: 1em; }
-    .option { display: block; margin: 0.5em 0; }
-    .result { font-weight: bold; margin-top: 1em; }
-    .stats { margin-top: 1em; }
-    button { margin-top: 1em; margin-right: 0.5em; }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      padding: 1.5em;
+      max-width: 700px;
+      margin: auto;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .question {
+      font-size: 1.5em;
+      margin-bottom: 1em;
+      font-weight: bold;
+    }
+
+    .option {
+      display: block;
+      margin: 0.8em 0;
+      padding: 0.8em;
+      font-size: 1.2em;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+    }
+
+    .option:hover {
+      background-color: #e0e0ff;
+    }
+
+    .result {
+      font-weight: bold;
+      margin-top: 1em;
+      font-size: 1.2em;
+    }
+
+    .stats {
+      margin-top: 1em;
+      font-size: 1em;
+    }
+
+    button {
+      margin-top: 1em;
+      margin-right: 0.5em;
+      padding: 0.7em 1.5em;
+      font-size: 1em;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    @media (max-width: 480px) {
+      body { font-size: 20px; }
+      .question { font-size: 1.6em; }
+      .option { font-size: 1.3em; }
+    }
   </style>
 </head>
 <body>
@@ -27,33 +86,31 @@
   </div>
 
   <script>
-    // 題庫
     const originalQuestions = [
       {
         question: "我國憲法是在哪一年制定的？",
         options: ["1911年", "1947年", "1987年", "2005年"],
-        answer: 1
+        answer: 1,
+        explanation: "中華民國憲法於1947年制定，並於同年12月25日施行。"
       },
       {
         question: "下列哪一項屬於三權分立之一？",
         options: ["經濟權", "行政權", "新聞自由", "文化權"],
-        answer: 1
+        answer: 1,
+        explanation: "三權分立為立法權、行政權、司法權，行政權是其中之一。"
       },
       {
         question: "司法院屬於我國哪一權？",
         options: ["立法權", "行政權", "司法權", "考試權"],
-        answer: 2
+        answer: 2,
+        explanation: "司法院屬於司法權，是解釋憲法、審理訴訟的機關。"
       },
       {
         question: "中華民國國慶日是幾月幾號？",
         options: ["10月1日", "10月10日", "12月25日", "1月1日"],
-        answer: 1
-      },
-{
-  question: "下列選項何者並非我國監獄行刑法主旨中所謂的改悔向上措施？",
-  options: ["本法40條施以教化", "本法141條之更生保護", "本法41條利用宗教力量", "本法第9章接見與通信"],
-  answer: 1
-}
+        answer: 1,
+        explanation: "中華民國國慶日為10月10日，稱為雙十節。"
+      }
     ];
 
     let questions = [];
@@ -98,14 +155,20 @@
       const q = questions[current];
       const resultDiv = document.getElementById("result");
       if (selected === q.answer) {
-        resultDiv.textContent = "✅ 答對了！";
+        resultDiv.innerHTML = "✅ 答對了！";
         resultDiv.style.color = "green";
         correct++;
       } else {
-        resultDiv.textContent = "❌ 答錯了，正確答案是 " + String.fromCharCode(65 + q.answer);
+        resultDiv.innerHTML = "❌ 答錯了，正確答案是 " + String.fromCharCode(65 + q.answer);
         resultDiv.style.color = "red";
         wrong++;
       }
+
+      // 顯示解析
+      if (q.explanation) {
+        resultDiv.innerHTML += `<br><span style="color: black;">解析：${q.explanation}</span>`;
+      }
+
       updateStats();
     }
 
