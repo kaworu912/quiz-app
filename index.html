@@ -1,16 +1,28 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>多科目答題系統</title>
   <style>
     body {
       font-family: sans-serif;
       font-size: 14px;
-      padding: 20px;
+      padding: 10px;
       line-height: 1.6;
+      max-width: 600px;
+      margin: auto;
+    }
+    h2 {
+      font-size: 18px;
+    }
+    select, button {
+      font-size: 14px;
+      padding: 6px 10px;
+      margin: 8px 0;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      cursor: pointer;
     }
     .question-box {
       margin-top: 20px;
@@ -23,6 +35,8 @@
       border-radius: 5px;
       background-color: #f9f9f9;
       cursor: pointer;
+      font-size: 14px;
+      user-select: none;
     }
     .option.correct {
       background-color: #d4edda;
@@ -35,6 +49,7 @@
     #result {
       margin-top: 15px;
       font-weight: bold;
+      font-size: 14px;
     }
     #score {
       margin-top: 5px;
@@ -61,14 +76,91 @@
   <button onclick="resetQuiz()">重新開始</button>
 
   <script>
-    const questionBanks = {"監獄行刑法": [{"question": "依監獄行刑法規定，受刑人可以向哪個機關申訴監獄處分？", "options": ["監獄長官", "地方法院", "監察院", "法務部"], "answer": 1, "explanation": "受刑人若對監獄處分不服，得向地方法院提起訴訟或聲明異議。"}, {"question": "監獄行刑法主要是規範下列何種事項？", "options": ["刑事訴訟程序", "受刑人處遇與管理", "檢察官權限", "法院組織"], "answer": 1, "explanation": "監獄行刑法主要規範受刑人在監之處遇、懲罰、請假、會客等事項。"}], "刑法": [{"question": "刑法上所謂的故意，是指行為人對於構成要件該當事實具有何種心理狀態？", "options": ["疏忽", "明知並希望", "不知情", "過失"], "answer": 1, "explanation": "刑法中的故意，包含直接故意與間接故意，皆需有明知且希望或放任。"}, {"question": "刑法第19條規定有關心神喪失者的責任，下列敘述何者正確？", "options": ["完全免除其刑事責任", "減輕其刑", "得加重其刑", "無關責任"], "answer": 0, "explanation": "心神喪失者行為時無辨識能力，不負刑事責任。"}], "法學緒論": [{"question": "下列何者非屬法律的特徵？", "options": ["普遍性", "強制性", "地方性", "規範性"], "answer": 2, "explanation": "法律具備普遍、規範、強制等特性，地方性非本質特徵。"}, {"question": "法學上所稱的「實體法」，主要規範什麼？", "options": ["訴訟程序", "權利義務內容", "法院組織", "管轄權"], "answer": 1, "explanation": "實體法規範權利義務的實質內容，如民法、刑法。"}], "犯罪學": [{"question": "差別接觸理論的重點在於？", "options": ["生理因素", "家庭教養", "與犯罪者互動", "遺傳影響"], "answer": 2, "explanation": "差別接觸理論認為與犯罪者頻繁互動會學習到犯罪行為。"}, {"question": "下列何者屬於社會控制理論的主張？", "options": ["犯罪源於學習", "社會聯結越強，越不易犯罪", "犯罪天生具備", "人格缺陷"], "answer": 1, "explanation": "社會控制理論主張社會聯結越強，犯罪傾向越低。"}], "監獄學": [{"question": "監獄學中，改革派監獄的重點為何？", "options": ["強調隔離", "強調報復", "重視教育與改造", "執行死刑"], "answer": 2, "explanation": "改革派強調教育、工作及改造受刑人，使其復歸社會。"}, {"question": "根據監獄學的分類，總體設施監獄的特色是？", "options": ["高度自由", "高科技管理", "全封閉且集中管理", "以網路監控為主"], "answer": 2, "explanation": "總體設施是傳統集中式管理，安全性高但自由低。"}]};
+    const questionBanks = {
+      "監獄行刑法": [
+        {
+          "question": "依監獄行刑法規定，受刑人可以向哪個機關申訴監獄處分？",
+          "options": ["監獄長官", "地方法院", "監察院", "法務部"],
+          "answer": 1,
+          "explanation": "受刑人若對監獄處分不服，得向地方法院提起訴訟或聲明異議。"
+        },
+        {
+          "question": "監獄行刑法主要是規範下列何種事項？",
+          "options": ["刑事訴訟程序", "受刑人處遇與管理", "檢察官權限", "法院組織"],
+          "answer": 1,
+          "explanation": "監獄行刑法主要規範受刑人在監之處遇、懲罰、請假、會客等事項。"
+        }
+      ],
+      "刑法": [
+        {
+          "question": "刑法上所謂的故意，是指行為人對於構成要件該當事實具有何種心理狀態？",
+          "options": ["疏忽", "明知並希望", "不知情", "過失"],
+          "answer": 1,
+          "explanation": "刑法中的故意，包含直接故意與間接故意，皆需有明知且希望或放任。"
+        },
+        {
+          "question": "刑法第19條規定有關心神喪失者的責任，下列敘述何者正確？",
+          "options": ["完全免除其刑事責任", "減輕其刑", "得加重其刑", "無關責任"],
+          "answer": 0,
+          "explanation": "心神喪失者行為時無辨識能力，不負刑事責任。"
+        }
+      ],
+      "法學緒論": [
+        {
+          "question": "下列何者非屬法律的特徵？",
+          "options": ["普遍性", "強制性", "地方性", "規範性"],
+          "answer": 2,
+          "explanation": "法律具備普遍、規範、強制等特性，地方性非本質特徵。"
+        },
+        {
+          "question": "法學上所稱的「實體法」，主要規範什麼？",
+          "options": ["訴訟程序", "權利義務內容", "法院組織", "管轄權"],
+          "answer": 1,
+          "explanation": "實體法規範權利義務的實質內容，如民法、刑法。"
+        }
+      ],
+      "犯罪學": [
+        {
+          "question": "差別接觸理論的重點在於？",
+          "options": ["生理因素", "家庭教養", "與犯罪者互動", "遺傳影響"],
+          "answer": 2,
+          "explanation": "差別接觸理論認為與犯罪者頻繁互動會學習到犯罪行為。"
+        },
+        {
+          "question": "下列何者屬於社會控制理論的主張？",
+          "options": ["犯罪源於學習", "社會聯結越強，越不易犯罪", "犯罪天生具備", "人格缺陷"],
+          "answer": 1,
+          "explanation": "社會控制理論主張社會聯結越強，犯罪傾向越低。"
+        }
+      ],
+      "監獄學": [
+        {
+          "question": "監獄學中，改革派監獄的重點為何？",
+          "options": ["強調隔離", "強調報復", "重視教育與改造", "執行死刑"],
+          "answer": 2,
+          "explanation": "改革派強調教育、工作及改造受刑人，使其復歸社會。"
+        },
+        {
+          "question": "根據監獄學的分類，總體設施監獄的特色是？",
+          "options": ["高度自由", "高科技管理", "全封閉且集中管理", "以網路監控為主"],
+          "answer": 2,
+          "explanation": "總體設施是傳統集中式管理，安全性高但自由低。"
+        }
+      ]
+    };
+
     let currentSubject = "監獄行刑法";
     let currentQuestions = [];
     let currentQuestionIndex = 0;
     let correctCount = 0;
     let wrongCount = 0;
 
-    document.getElementById("subject-select").addEventListener("change", function() {
+    const subjectSelect = document.getElementById("subject-select");
+    const questionBox = document.getElementById("question-box");
+    const result = document.getElementById("result");
+    const score = document.getElementById("score");
+
+    subjectSelect.addEventListener("change", function() {
       currentSubject = this.value;
       resetQuiz();
     });
@@ -80,21 +172,21 @@
       correctCount = 0;
       wrongCount = 0;
       showQuestion();
+      score.textContent = "";
+      result.textContent = "";
     }
 
     function showQuestion() {
-      const box = document.getElementById("question-box");
-      const result = document.getElementById("result");
+      questionBox.innerHTML = "";
       result.textContent = "";
-      box.innerHTML = "";
       if (currentQuestionIndex >= currentQuestions.length) {
-        box.innerHTML = "<p>本科目題目已完成。</p>";
+        questionBox.innerHTML = "<p>本科目題目已完成。</p>";
         return;
       }
       const q = currentQuestions[currentQuestionIndex];
       const questionEl = document.createElement("div");
       questionEl.innerHTML = `<strong>Q${currentQuestionIndex + 1}：</strong>${q.question}`;
-      box.appendChild(questionEl);
+      questionBox.appendChild(questionEl);
 
       const optionIndexes = [0, 1, 2, 3];
       shuffleArray(optionIndexes);
@@ -117,9 +209,9 @@
             wrongCount++;
           }
           result.innerHTML += `<br><small>解析：${q.explanation}</small>`;
-          document.getElementById("score").textContent = `✔️ 答對：${correctCount} 題　❌ 答錯：${wrongCount} 題`;
+          score.textContent = `✔️ 答對：${correctCount} 題　❌ 答錯：${wrongCount} 題`;
         });
-        box.appendChild(btn);
+        questionBox.appendChild(btn);
       });
     }
 
@@ -130,7 +222,6 @@
 
     function resetQuiz() {
       loadQuestions();
-      document.getElementById("score").textContent = "";
     }
 
     function shuffleArray(array) {
@@ -140,7 +231,7 @@
       }
     }
 
-    // 初始化
+    // 初始化載入題目
     loadQuestions();
   </script>
 </body>
