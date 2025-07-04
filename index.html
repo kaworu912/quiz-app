@@ -63,7 +63,7 @@
       margin-top: 10px;
     }
     .button-group button:last-child {
-      margin-left: 10px; /* 將"重新開始"往右移 */
+      margin-left: 30px;
     }
   </style>
 </head>
@@ -91,18 +91,18 @@
     const questionBanks = {
       "監獄行刑法": [
         {
-          "question": "下列何者並非我國監獄行刑之積極目的？",
-          "options": ["改悔向上", "監禁處遇", "培養其適應社會生活之能力", "以上皆是"],
-          "answer": 1,
-          "explanation": "監禁處遇是手段，不是目的。"
+          question: "下列何者並非我國監獄行刑之積極目的？",
+          options: ["改悔向上", "監禁處遇", "培養其適應社會生活之能力", "以上皆是"],
+          answer: 1,
+          explanation: "監禁處遇是手段，不是目的。"
         },
         {
-          "question": "由監獄行刑法第三條之規定中，可知下列何者為監獄中執行之例外？",
-          "options": ["拘役", "有期徒刑", "無期徒刑", "死刑"],
-          "answer": 3,
-          "explanation": "監獄執行自由刑（徒刑、拘役），死刑不屬自由刑。"
+          question: "由監獄行刑法第三條之規定中，可知下列何者為監獄中執行之例外？",
+          options: ["拘役", "有期徒刑", "無期徒刑", "死刑"],
+          answer: 3,
+          explanation: "死刑並非自由刑，因此不在監獄中執行。"
         },
-        {
+                {
           "question": "依據監獄行刑法第三條，處徒刑、拘役及罰金易服勞役之受刑人，除法律別有規定外在監獄內執行之，下列選項何者為法律例外情況？",
           "options": ["本法27條之暫時釋放", "本法63條之保外醫治", "本法29日間外出", "以上皆是"],
           "answer": 3,
@@ -111,58 +111,58 @@
       ],
       "刑法": [
         {
-          "question": "刑法上所謂的故意，是指行為人對於構成要件該當事實具有何種心理狀態？",
-          "options": ["疏忽", "明知並希望", "不知情", "過失"],
-          "answer": 1,
-          "explanation": "故意包含明知並希望，或明知並放任。"
+          question: "刑法上所謂的故意，是指行為人對於構成要件該當事實具有何種心理狀態？",
+          options: ["疏忽", "明知並希望", "不知情", "過失"],
+          answer: 1,
+          explanation: "故意包括明知並希望或放任結果的發生。"
         },
         {
-          "question": "刑法第19條規定有關心神喪失者的責任，下列敘述何者正確？",
-          "options": ["完全免除其刑事責任", "減輕其刑", "得加重其刑", "無關責任"],
-          "answer": 0,
-          "explanation": "完全心神喪失者不負刑事責任。"
+          question: "刑法第19條規定有關心神喪失者的責任，下列敘述何者正確？",
+          options: ["完全免除其刑事責任", "減輕其刑", "得加重其刑", "無關責任"],
+          answer: 0,
+          explanation: "完全心神喪失者不負刑事責任。"
         }
       ],
       "法學緒論": [
         {
-          "question": "下列何者非屬法律的特徵？",
-          "options": ["普遍性", "強制性", "地方性", "規範性"],
-          "answer": 2,
-          "explanation": "地方性是地方自治規章的特徵，法律則具全國普遍性。"
+          question: "下列何者非屬法律的特徵？",
+          options: ["普遍性", "強制性", "地方性", "規範性"],
+          answer: 2,
+          explanation: "地方性不是法律的普遍特徵，而是地方法規的性質。"
         },
         {
-          "question": "法學上所稱的「實體法」，主要規範什麼？",
-          "options": ["訴訟程序", "權利義務內容", "法院組織", "管轄權"],
-          "answer": 1,
-          "explanation": "實體法如民法、刑法，規範實質權利義務內容。"
+          question: "法學上所稱的「實體法」，主要規範什麼？",
+          options: ["訴訟程序", "權利義務內容", "法院組織", "管轄權"],
+          answer: 1,
+          explanation: "實體法規範的是權利義務的實際內容。"
         }
       ],
       "犯罪學": [
         {
-          "question": "差別接觸理論的重點在於？",
-          "options": ["生理因素", "家庭教養", "與犯罪者互動", "遺傳影響"],
-          "answer": 2,
-          "explanation": "差別接觸理論主張犯罪是社會學習的結果。"
+          question: "差別接觸理論的重點在於？",
+          options: ["生理因素", "家庭教養", "與犯罪者互動", "遺傳影響"],
+          answer: 2,
+          explanation: "與犯罪者接觸越多，越可能學習犯罪行為。"
         },
         {
-          "question": "下列何者屬於社會控制理論的主張？",
-          "options": ["犯罪源於學習", "社會聯結越強，越不易犯罪", "犯罪天生具備", "人格缺陷"],
-          "answer": 1,
-          "explanation": "社會控制理論認為社會聯繫可減少偏差行為。"
+          question: "下列何者屬於社會控制理論的主張？",
+          options: ["犯罪源於學習", "社會聯結越強，越不易犯罪", "犯罪天生具備", "人格缺陷"],
+          answer: 1,
+          explanation: "社會控制理論強調聯結強會減少犯罪傾向。"
         }
       ],
       "監獄學": [
         {
-          "question": "監獄學中，改革派監獄的重點為何？",
-          "options": ["強調隔離", "強調報復", "重視教育與改造", "執行死刑"],
-          "answer": 2,
-          "explanation": "改革派重視教育與改造，使受刑人復歸社會。"
+          question: "監獄學中，改革派監獄的重點為何？",
+          options: ["強調隔離", "強調報復", "重視教育與改造", "執行死刑"],
+          answer: 2,
+          explanation: "改革派強調透過教育與改造幫助受刑人復歸社會。"
         },
         {
-          "question": "根據監獄學的分類，總體設施監獄的特色是？",
-          "options": ["高度自由", "高科技管理", "全封閉且集中管理", "以網路監控為主"],
-          "answer": 2,
-          "explanation": "總體設施強調封閉、安全、集中管理。"
+          question: "根據監獄學的分類，總體設施監獄的特色是？",
+          options: ["高度自由", "高科技管理", "全封閉且集中管理", "以網路監控為主"],
+          answer: 2,
+          explanation: "總體設施監獄具有高度安全與集中式管理的特性。"
         }
       ]
     };
@@ -190,17 +190,18 @@
       correctCount = 0;
       wrongCount = 0;
       showQuestion();
-      score.textContent = "";
-      result.textContent = "";
     }
 
     function showQuestion() {
       questionBox.innerHTML = "";
       result.textContent = "";
+      score.textContent = `✔️ 答對：${correctCount} 題　❌ 答錯：${wrongCount} 題`;
+
       if (currentQuestionIndex >= currentQuestions.length) {
         questionBox.innerHTML = "<p>本科目題目已完成。</p>";
         return;
       }
+
       const q = currentQuestions[currentQuestionIndex];
       const questionEl = document.createElement("div");
       questionEl.innerHTML = `<strong>Q${currentQuestionIndex + 1}：</strong>${q.question}`;
@@ -212,10 +213,11 @@
       optionIndexes.forEach(i => {
         const btn = document.createElement("div");
         btn.className = "option";
-        btn.textContent = q.options[i]; // ✅ 不顯示 ABCD
+        btn.textContent = q.options[i]; // 不顯示 ABCD
         btn.addEventListener("click", () => {
           const allOptions = document.querySelectorAll(".option");
           allOptions.forEach(el => el.style.pointerEvents = "none");
+
           if (i === q.answer) {
             btn.classList.add("correct");
             result.textContent = `答對了！ (${currentQuestionIndex + 1}/${currentQuestions.length})`;
@@ -226,6 +228,7 @@
             result.textContent = `答錯了！ (${currentQuestionIndex + 1}/${currentQuestions.length})`;
             wrongCount++;
           }
+
           result.innerHTML += `<br><small>解析：${q.explanation}</small>`;
           score.textContent = `✔️ 答對：${correctCount} 題　❌ 答錯：${wrongCount} 題`;
         });
@@ -249,7 +252,6 @@
       }
     }
 
-    // 初始化
     loadQuestions();
   </script>
 </body>
