@@ -56,11 +56,6 @@
       font-size: 1.1em;
     }
 
-    .stats {
-      margin-top: 1em;
-      font-size: 1em;
-    }
-
     button {
       margin-top: 1em;
       margin-right: 0.5em;
@@ -78,7 +73,7 @@
     }
 
     @media (max-width: 480px) {
-      html { font-size: 18px; }
+      html { font-size: 16px; }
       .question { font-size: 1.4em; }
       .option { font-size: 1.2em; }
       button { font-size: 1.1em; }
@@ -91,10 +86,6 @@
     <div class="question" id="question"></div>
     <div id="options"></div>
     <div class="result" id="result"></div>
-    <div class="stats">
-      ✅ 答對：<span id="correctCount">0</span>　
-      ❌ 答錯：<span id="wrongCount">0</span>
-    </div>
     <button onclick="nextQuestion()">下一題</button>
     <button onclick="restartQuiz()">重新開始</button>
   </div>
@@ -120,40 +111,40 @@
         explanation: "司法院屬於司法權，是解釋憲法、審理訴訟的機關。"
       },
       {
-  question: "中華民國憲法明文規定的五權分立，不包括以下哪一項？",
-  options: ["立法權", "行政權", "軍事權", "考試權"],
-  answer: 2,
-  explanation: "五權分立包含立法、行政、司法、考試與監察，並未包含軍事權。"
-},
-{
-  question: "依憲法規定，總統的任期為幾年？",
-  options: ["4年", "5年", "6年", "任期未定"],
-  answer: 0,
-  explanation: "總統、副總統任期為四年，可連選連任一次（最多八年）。"
-},
-{
-  question: "依憲法第11條，國家保障人民的哪一項自由？",
-  options: ["財產自由", "工作自由", "言論自由", "教育自由"],
-  answer: 2,
-  explanation: "憲法第11條明文保障人民有言論、講學、著作及出版之自由。"
-},
-{
-  question: "下列何者為憲法增修條文明文規定的中央機關？",
-  options: ["省政府", "立法院", "鄉鎮市公所", "國防部"],
-  answer: 1,
-  explanation: "憲法增修條文明文規定中央有立法院與行政院等，立法院為中央機關。"
-},
-{
-  question: "人民享有選舉、罷免、創制、複決的權利，是屬於哪一類基本權？",
-  options: ["自由權", "平等權", "參政權", "請願權"],
-  answer: 2,
-  explanation: "這些權利是人民參與公共事務的方式，屬於參政權。"
-},
-      {
         question: "中華民國國慶日是幾月幾號？",
         options: ["10月1日", "10月10日", "12月25日", "1月1日"],
         answer: 1,
         explanation: "中華民國國慶日為10月10日，稱為雙十節。"
+      },
+      {
+        question: "中華民國憲法明文規定的五權分立，不包括以下哪一項？",
+        options: ["立法權", "行政權", "軍事權", "考試權"],
+        answer: 2,
+        explanation: "五權分立包含立法、行政、司法、考試與監察，並未包含軍事權。"
+      },
+      {
+        question: "依憲法規定，總統的任期為幾年？",
+        options: ["4年", "5年", "6年", "任期未定"],
+        answer: 0,
+        explanation: "總統、副總統任期為四年，可連選連任一次（最多八年）。"
+      },
+      {
+        question: "依憲法第11條，國家保障人民的哪一項自由？",
+        options: ["財產自由", "工作自由", "言論自由", "教育自由"],
+        answer: 2,
+        explanation: "憲法第11條明文保障人民有言論、講學、著作及出版之自由。"
+      },
+      {
+        question: "下列何者為憲法增修條文明文規定的中央機關？",
+        options: ["省政府", "立法院", "鄉鎮市公所", "國防部"],
+        answer: 1,
+        explanation: "憲法增修條文明文規定中央有立法院與行政院等，立法院為中央機關。"
+      },
+      {
+        question: "人民享有選舉、罷免、創制、複決的權利，是屬於哪一類基本權？",
+        options: ["自由權", "平等權", "參政權", "請願權"],
+        answer: 2,
+        explanation: "這些權利是人民參與公共事務的方式，屬於參政權。"
       }
     ];
 
@@ -201,25 +192,21 @@
       const options = document.querySelectorAll(".option");
 
       if (selected === q.answer) {
-  correct++;
-  resultDiv.innerHTML = `✅ 答對了！（目前答對：${correct} 題，答錯：${wrong} 題）`;
-  resultDiv.style.color = "green";
-  options[selected].classList.add("correct");
-} else {
-  wrong++;
-  resultDiv.innerHTML = `❌ 答錯了，正確答案是 ${String.fromCharCode(65 + q.answer)}（目前答對：${correct} 題，答錯：${wrong} 題）`;
-  resultDiv.style.color = "red";
-  options[selected].classList.add("wrong");
-  options[q.answer].classList.add("correct");
-}
-
+        correct++;
+        resultDiv.innerHTML = `✅ 答對了！（目前答對：${correct} 題，答錯：${wrong} 題）`;
+        resultDiv.style.color = "green";
+        options[selected].classList.add("correct");
+      } else {
+        wrong++;
+        resultDiv.innerHTML = `❌ 答錯了，正確答案是 ${String.fromCharCode(65 + q.answer)}（目前答對：${correct} 題，答錯：${wrong} 題）`;
+        resultDiv.style.color = "red";
+        options[selected].classList.add("wrong");
+        options[q.answer].classList.add("correct");
       }
 
       if (q.explanation) {
         resultDiv.innerHTML += `<br><span style="color: black;">解析：${q.explanation}</span>`;
       }
-
-      updateStats();
     }
 
     function nextQuestion() {
@@ -238,13 +225,7 @@
       current = 0;
       questions = [...originalQuestions];
       shuffle(questions);
-      updateStats();
       loadQuestion();
-    }
-
-    function updateStats() {
-      document.getElementById("correctCount").textContent = correct;
-      document.getElementById("wrongCount").textContent = wrong;
     }
 
     restartQuiz();
