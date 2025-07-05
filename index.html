@@ -61,7 +61,7 @@
     .button-group {
       margin-top: 10px;
       display: flex;
-      gap: 180px; /* 控制按鈕間距 */
+      gap: 180px; /* 按鈕間距 */
     }
   </style>
 </head>
@@ -81,7 +81,7 @@
   <div id="result"></div>
   <div id="score"></div>
   <div class="button-group">
-    <button onclick="nextQuestion()">下一題</button>
+    <button id="next-btn" onclick="nextQuestion()">下一題</button>
     <button onclick="resetQuiz()">重新開始</button>
   </div>
 
@@ -100,11 +100,11 @@
           answer: 3,
           explanation: "監獄為執行自由刑之場所，徒刑拘役為自由刑。死刑並非自由刑。"
         },
-{
-          "question": "依據監獄行刑法，下列敘述何者錯誤？",
-          "options": ["監獄行刑法之主管機關為法務部", "監獄之監督機關為法務部矯正署", "監獄之監督機關應派員視察監獄，每月至少一次", "少年法院法官、檢察官執行刑罰有關事項，得隨時訪視少年矯正學校、監獄"],
-          "answer": 2,
-          "explanation": "根據《監獄行刑法》，監督機關應派員視察監獄，每季至少一次。"
+        {
+          question: "依據監獄行刑法，下列敘述何者錯誤？",
+          options: ["監獄行刑法之主管機關為法務部", "監獄之監督機關為法務部矯正署", "監獄之監督機關應派員視察監獄，每月至少一次", "少年法院法官、檢察官執行刑罰有關事項，得隨時訪視少年矯正學校、監獄"],
+          answer: 2,
+          explanation: "根據《監獄行刑法》，監督機關應派員視察監獄，每季至少一次。"
         }
       ],
       "刑法": [
@@ -141,17 +141,22 @@
       ]
     };
 
+    const maxQuestions = 50;  // 答題限制50題
+
     let currentSubject = "監獄行刑法";
     let currentQuestions = [];
     let currentQuestionIndex = 0;
     let correctCount = 0;
     let wrongCount = 0;
     let completedCount = 0;
+    let scorePoints = 0;
+    let quizEnded = false;
 
     const subjectSelect = document.getElementById("subject-select");
     const questionBox = document.getElementById("question-box");
     const result = document.getElementById("result");
     const score = document.getElementById("score");
+    const nextBtn = document.getElementById("next-btn");
 
     subjectSelect.addEventListener("change", function () {
       currentSubject = this.value;
@@ -159,12 +164,25 @@
     });
 
     function loadQuestions() {
+      // 從該科目題庫複製題目
       currentQuestions = [...questionBanks[currentSubject]];
       shuffleArray(currentQuestions);
+
+      // 如果題目數少於50題，重複合併補足至50題
+      while(currentQuestions.length < maxQuestions){
+        currentQuestions = currentQuestions.concat([...questionBanks[currentSubject]]);
+        shuffleArray(currentQuestions);
+      }
+      // 取前50題
+      currentQuestions = currentQuestions.slice(0, maxQuestions);
+
       currentQuestionIndex = 0;
       correctCount = 0;
       wrongCount = 0;
       completedCount = 0;
+      scorePoints = 0;
+      quizEnded = false;
+      nextBtn.disabled = false;
       showQuestion();
     }
 
@@ -173,7 +191,13 @@
       result.textContent = "";
       updateScore();
 
+      if (quizEnded) {
+        questionBox.innerHTML = `<p>答題結束！總分：${scorePoints} 分 (每題答對得 2 分)</p>`;
+        return;
+      }
+
       if (currentQuestionIndex >= currentQuestions.length) {
+        // 安全備案：理論上不會超過 maxQuestions
         questionBox.innerHTML = "<p>本科目題目已完成。</p>";
         return;
       }
@@ -191,29 +215,47 @@
         btn.className = "option";
         btn.textContent = q.options[i];
         btn.addEventListener("click", () => {
+          if (quizEnded) return;
           const allOptions = document.querySelectorAll(".option");
           allOptions.forEach(el => el.style.pointerEvents = "none");
 
           if (i === q.answer) {
             btn.classList.add("correct");
             correctCount++;
+            scorePoints += 2; // 答對加2分
           } else {
             btn.classList.add("incorrect");
             allOptions[q.answer].classList.add("correct");
             wrongCount++;
+            // 答錯不扣分
           }
 
           completedCount++;
           result.innerHTML = `<small>解析：${q.explanation}</small>`;
           updateScore();
+
+          // 答滿50題就結束
+          if(completedCount >= maxQuestions){
+            quizEnded = true;
+            nextBtn.disabled = true;
+            questionBox.innerHTML = `<p>答題結束！總分：${scorePoints} 分 (每題答對得 2 分)</p>`;
+          }
         });
         questionBox.appendChild(btn);
       });
     }
 
     function nextQuestion() {
-      currentQuestionIndex++;
-      showQuestion();
+      if (quizEnded) {
+        alert("答題已結束，請點「重新開始」重新開始。");
+        return;
+      }
+      if(currentQuestionIndex < currentQuestions.length - 1){
+        currentQuestionIndex++;
+        showQuestion();
+      } else {
+        alert("已完成所有題目");
+      }
     }
 
     function resetQuiz() {
@@ -221,7 +263,7 @@
     }
 
     function updateScore() {
-      score.textContent = `✔️ 答對：${correctCount} 題　❌ 答錯：${wrongCount} 題　📘 已完成 ${completedCount}/${currentQuestions.length}`;
+      score.textContent = `✔️ 答對：${correctCount} 題　❌ 答錯：${wrongCount} 題　📘 已完成 ${completedCount}/${maxQuestions}`;
     }
 
     function shuffleArray(array) {
