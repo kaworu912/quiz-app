@@ -114,7 +114,8 @@
       "監獄為執行刑罰之處所，係屬法務行政組織，而監獄工作人員限制受刑人自由之行為，亦為司法審判行為"
     ],
     "answer": 3,
-    "explanation": "監獄工作人員限制受刑人自由的行為，是基於法律授權的行政行為，而非司法審判行為。
+    "explanation": "監獄工作人員限制受刑人自由的行為，是基於法律授權的行政行為，而非司法審判行為。"
+  },
   {
     "question": "受刑人入監時經健康檢查而應拒絕收監之情形，下列敘述何者錯誤？",
     "options": [
@@ -190,7 +191,7 @@
       "依行刑累進處遇條例第 19 條之標準 9 成計算"
     ],
     "answer": 2,
-    "explanation": "依據《監獄行刑法》第20條第1項第6款規定，適用累進處遇者，編級後之責任分數，應依《行刑累進處遇條例》第19條之標準8成計算。"
+    "explanation": "《監獄行刑法》第20條第1項第6款規定，適用累進處遇者，編級後之責任分數，應依《行刑累進處遇條例》第19條之標準8成計算。"
   },
   {
     "question": "受刑人因親屬喪亡時，得經監獄長官核准戒護返家探視，有關親屬之範圍，下列敘述何者錯誤？",
@@ -313,7 +314,7 @@
     "answer": 0,
     "explanation": "初犯指無前科者。"
   },
-{
+        {
           question: "相較於傳統監獄行刑之目的，彰顯現行監獄行刑法「第 1 條」之基本精神及其立法之「積極目的」 ，下列組合何者正確？", //第1題
           options: ["修復、嚇阻", "隔離、應報", "矯治、教化", "懲罰、痛苦"],
           answer: 2,
@@ -331,7 +332,7 @@
           answer: 2,
           explanation: "根據《監獄行刑法》，監督機關應派員視察監獄，每季至少一次。"
         },
-        {
+{
 "question": "依據監獄行刑法以及相關法規之規定，下列敘述何者正確？",
 "options": ["未滿十八歲之少年受刑人，應收容於少年矯正學校，且毋庸按其性別分別收容", "收容中滿十八歲而殘餘刑期未滿三個月者，得繼續收容於少年矯正學校", "滿十八歲之少年受刑人，得依其教育需要，收容於少年矯正學校至滿二十二歲為止", "監獄行刑法所稱少年受刑人，指受法院裁判時未滿十八歲之受刑人"],
 "answer": 1,
@@ -440,7 +441,7 @@
     answer: 1,
     explanation: "依監獄行刑法規定，單獨監禁不得超過 15 日。"
   },
-          {
+        {
     "question": "依據監獄行刑法以及相關法規之規定，下列敘述何者正確？",
     "options": [
       "為落實透明化原則，保障受刑人權益，監獄應設獨立之外部視察小組，置委員三人至七人，任期二年，均為有給職，由監督機關陳報法務部核定後遴聘之",
@@ -594,7 +595,7 @@
     "answer": 3,
     "explanation": "戒護、搜檢及檢查仍應遵守比例原則。"
   },
-          {
+        {
     "question": "依據監獄行刑法以及相關法規之規定，下列敘述何者錯誤？",
     "options": [
       "受刑人有危害監獄安全之虞者，監獄得施以隔離保護",
@@ -749,7 +750,7 @@
     "answer": 2,
     "explanation": "監獄人員對有合理懷疑脫逃之虞的受刑人書信得予以閱讀。"
   },
-         {
+        {
     "question": "依據監獄行刑法以及相關法規之規定，下列敘述何者正確？",
     "options": [
       "受刑人有妨害監獄秩序或安全之行為時，監獄得停止其接受送入飲食三日至十四日",
@@ -959,7 +960,7 @@
         // 每次顯示題目時，先清除所有選項的正確/錯誤樣式
         btn.classList.remove("correct", "incorrect");
         // 預設啟用選項，以便重新作答
-        btn.style.pointerEvents = "auto"; 
+        btn.style.pointerEvents = "auto";  
 
         // 如果題目已作答過，則顯示上次的選擇和正確答案
         if (q.userAttempt.answered) {
@@ -973,8 +974,13 @@
             }
             // 總是標示正確答案（如果它不是用戶選擇的那個，或用戶選錯了但正確答案沒標記）
             if (originalIndex === q.answer && !btn.classList.contains("correct")) {
-                 btn.classList.add("correct");
+                btn.classList.add("correct");
             }
+            // 如果已作答，禁用選項
+            optionElements.forEach(el => el.style.pointerEvents = "none");
+            result.innerHTML = `<small>解析：${q.explanation}</small>`;
+            nextBtn.disabled = false;
+            prevBtn.disabled = currentQuestionIndex === 0;
         }
 
         btn.addEventListener("click", () => {
@@ -1019,50 +1025,41 @@
             btn.classList.add("correct");
           } else {
             btn.classList.add("incorrect");
-            // 找到正確答案並標記
-            const correctOptionText = q.options[q.answer];
-            for (const optionEl of optionElements) {
-              if (optionEl.textContent === correctOptionText) {
-                optionEl.classList.add("correct");
-                break;
+            // Also show the correct answer
+            optionElements.forEach((el, idx) => {
+              // We need to find the element that corresponds to the original correct answer index,
+              // not the shuffled 'originalIndex' for the clicked button.
+              // So, we need to iterate through all options and check if their originalIndex matches q.answer
+              const actualOptionIndex = q.options.indexOf(el.textContent); // Find original index of this option element
+              if (actualOptionIndex === q.answer) {
+                el.classList.add("correct");
               }
-            }
+            });
           }
 
           result.innerHTML = `<small>解析：${q.explanation}</small>`;
           updateScore();
 
-          // --- 按鈕狀態（作答後） ---
-          nextBtn.disabled = false; // 作答後啟用下一題按鈕
-          prevBtn.disabled = (currentQuestionIndex === 0); // 確保在第一題時禁用上一題按鈕
-
-
-          // --- 測驗結束檢查 ---
+          // 答滿50題就結束
           if(completedCount >= maxQuestions){
             quizEnded = true;
             nextBtn.disabled = true;
-            prevBtn.disabled = true;
-            nextBtn.style.display = "none"; // 隱藏下一題按鈕
-            questionBox.innerHTML = `<p>答題結束！您總共答對了 ${correctCount} 題，答錯了 ${wrongCount} 題。總分：${scorePoints} 分</p>`;
-            optionsContainer.innerHTML = ''; // 清空選項
-            result.innerHTML = ''; // 清空解析
-            resetBtn.disabled = false; // 確保重新開始按鈕啟用
+            // The final message is displayed in showQuestion() if quizEnded is true
+            showQuestion(); // Call showQuestion to render the final message and hide buttons
+          } else {
+            nextBtn.disabled = false; // 答題未結束時，啟用下一題按鈕
           }
+          prevBtn.disabled = false; // 答題後啟用上一題按鈕
         });
       });
-
-      // --- 初始按鈕狀態（顯示題目時） ---
-      // 如果當前題目尚未作答且未達到最大題目數，則禁用下一題按鈕
-      nextBtn.disabled = !q.userAttempt.answered && completedCount < maxQuestions;
-
-      // 如果在第一題，禁用上一題按鈕
-      prevBtn.disabled = (currentQuestionIndex === 0);
-      
-      // 在測驗進行中，禁用重新開始按鈕 (防止誤觸)
-      resetBtn.disabled = true; 
-
-      // 確保下一題按鈕在測驗結束前是顯示的
-      nextBtn.style.display = quizEnded ? "none" : "block";
+      // 在 showQuestion 結束時，根據是否作答禁用或啟用按鈕
+      if (q.userAttempt.answered) {
+        nextBtn.disabled = false;
+        prevBtn.disabled = currentQuestionIndex === 0;
+      } else {
+        nextBtn.disabled = true; // 如果當前題目未作答，下一題按鈕應禁用
+        prevBtn.disabled = currentQuestionIndex === 0;
+      }
     }
 
     function nextQuestion() {
@@ -1070,47 +1067,40 @@
         alert("答題已結束，請點「重新開始」重新開始。");
         return;
       }
-      // 只有當前題目已作答，才能前往下一題 (防止跳題)
-      if (!currentQuestions[currentQuestionIndex].userAttempt.answered && completedCount < maxQuestions) {
-          alert("請先完成當前題目。");
-          return;
-      }
       if(currentQuestionIndex < currentQuestions.length - 1){
         currentQuestionIndex++;
         showQuestion();
       } else {
-          // 如果已經是最後一題，且所有題目都已完成，則觸發測驗結束
-          if (completedCount >= maxQuestions) {
-            quizEnded = true;
-            showQuestion(); // 顯示結束畫面
-          } else {
-            alert("所有題目已完成，請點擊「重新開始」開始新一輪測驗。");
-          }
+        // 如果已經是最後一題，並且題目已作答，則提示已完成所有題目
+        if (currentQuestions[currentQuestionIndex].userAttempt.answered) {
+             alert("已完成所有題目");
+        } else {
+             // 如果是最後一題但未作答，則不應進入此分支，應該等待作答
+             // 但為了確保邏輯健全，這裡可以加上一個提醒
+             alert("請先完成當前題目。");
+        }
       }
     }
 
     function previousQuestion() {
-        if (quizEnded) {
-            alert("答題已結束，請點「重新開始」重新開始。");
-            return;
-        }
-        if (currentQuestionIndex > 0) {
-            currentQuestionIndex--;
-            showQuestion();
-        } else {
-            alert("這已經是第一題了。");
-        }
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        showQuestion();
+      } else {
+        alert("已經是第一題了");
+      }
     }
 
     function resetQuiz() {
       loadQuestions();
+      prevBtn.disabled = true; // 重置時禁用上一題按鈕
     }
 
     function updateScore() {
-      // completedCount 現在會在每次作答後或載入題目時更新
-      score.textContent = `✔️ 答對：${correctCount} 題　❌ 答錯：${wrongCount} 題　📘 已完成 ${completedCount}/${maxQuestions}`;
+      score.textContent = `✔️ 答對：${correctCount} 題　❌ 答錯：${wrongCount} 題　總分：${scorePoints} 分 (已完成 ${completedCount} / ${maxQuestions} 題)`;
     }
 
+    // 陣列洗牌函式
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -1118,8 +1108,8 @@
       }
     }
 
-    // 初始載入時開始測驗
-    document.addEventListener("DOMContentLoaded", loadQuestions);
+    // 初始載入題目
+    loadQuestions();
   </script>
 </body>
 </html>
